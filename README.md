@@ -464,4 +464,4 @@ Set `GEMINI_API_KEY` in the environment. Update `ML_SERVICE_URL` in server/.env 
 
 ## License
 
-ISC - SwasthyaSetu Team - SIH 2024
+ISC 
