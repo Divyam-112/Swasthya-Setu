@@ -1,0 +1,10 @@
+{
+  "name": "synthetic_ocr_smoke_test",
+  "kind": "ocr",
+  "synthetic": true,
+  "cases": [
+    {"case_name": "exact_match", "hypothesis": "Paracetamol 650mg", "reference": "Paracetamol 650mg"},
+    {"case_name": "one_char_typo", "hypothesis": "Paracetamol 650mg", "reference": "Paracetamol 650mgg"},
+    {"case_name": "missing_word", "hypothesis": "Paracetamol", "reference": "Paracetamol 650mg"}
+  ]
+}

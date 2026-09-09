@@ -1,0 +1,19 @@
+{
+  "name": "synthetic_lab_smoke_test",
+  "kind": "lab",
+  "synthetic": true,
+  "cases": [
+    {
+      "predicted_test_name": "Hemoglobin", "expected_test_name": "Hemoglobin",
+      "predicted_value": "13.5", "expected_value": "13.5",
+      "predicted_reference_range": "12-16", "expected_reference_range": "12-16",
+      "predicted_abnormal_status": "NORMAL", "expected_abnormal_status": "NORMAL"
+    },
+    {
+      "predicted_test_name": "WBC", "expected_test_name": "WBC",
+      "predicted_value": "25", "expected_value": "25",
+      "predicted_reference_range": null, "expected_reference_range": "4-11",
+      "predicted_abnormal_status": "UNKNOWN", "expected_abnormal_status": "HIGH"
+    }
+  ]
+}

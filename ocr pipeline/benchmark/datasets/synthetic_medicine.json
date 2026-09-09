@@ -1,0 +1,11 @@
+{
+  "name": "synthetic_medicine_smoke_test",
+  "kind": "medicine",
+  "synthetic": true,
+  "cases": [
+    {"raw_name": "Paracetamol", "predicted_normalized": "Paracetamol", "expected_normalized": "Paracetamol"},
+    {"raw_name": "Rantidine", "predicted_normalized": null, "expected_normalized": "Ranitidine"},
+    {"raw_name": "gr snne", "predicted_normalized": null, "expected_normalized": null},
+    {"raw_name": "Azithral", "predicted_normalized": "Azithromycin", "expected_normalized": "Azithromycin"}
+  ]
+}

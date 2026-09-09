@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YogaLens — Real-Time Pose Detection & Form Coach</title>
+  <meta name="description" content="AI-powered real-time yoga pose detection and form correction using MediaPipe 30-landmark body tracking. Supports Warrior II, Tree Pose, Downward Dog, Plank, Cobra, Goddess, and Triangle poses." />
+  <meta name="theme-color" content="#080b14" />
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ── Loading Overlay ───────────────────────────────────────── -->
+  <div id="loading-overlay">
+    <div class="loading-inner">
+      <div class="loading-logo">YogaLens</div>
+      <p class="loading-sub">Initialising camera & pose model…</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- ── Header ────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">Yoga<span class="logo-dot">Lens</span></div>
+    <div class="header-right">
+      <div id="fps-counter">— FPS</div>
+      <label class="voice-ctrl" for="voice-toggle">
+        <span>🔊 Voice</span>
+        <label class="toggle">
+          <input type="checkbox" id="voice-toggle" />
+          <span class="toggle-slider"></span>
+        </label>
+      </label>
+    </div>
+  </header>
+
+  <!-- ── Main Layout ───────────────────────────────────────────── -->
+  <main>
+
+    <!-- ═══ LEFT — Camera + Pose Selector ════════════════════════ -->
+    <section class="camera-section" aria-label="Live camera feed">
+
+      <!-- Video + Skeleton overlay -->
+      <div class="video-wrapper">
+        <video id="webcam" autoplay muted playsinline></video>
+        <canvas id="skeleton-canvas"></canvas>
+
+        <!-- Overlay badges -->
+        <div class="video-badge tl" id="live-badge">● LIVE</div>
+        <div class="video-badge tr" id="landmark-count">30 Landmarks</div>
+
+        <!-- Bottom cue bar -->
+        <div id="cue-bar">
+          <div id="cue-text"></div>
+        </div>
+      </div>
+
+      <!-- Pose Selector -->
+      <nav class="pose-selector" aria-label="Select yoga pose">
+        <button class="pose-btn active" data-pose="warrior_2" id="btn-warrior_2">
+          <span class="pose-emoji">⚔️</span>
+          <span>Warrior II</span>
+        </button>
+        <button class="pose-btn" data-pose="tree_pose" id="btn-tree_pose">
+          <span class="pose-emoji">🌳</span>
+          <span>Tree</span>
+        </button>
+        <button class="pose-btn" data-pose="downward_dog" id="btn-downward_dog">
+          <span class="pose-emoji">🐕</span>
+          <span>Down Dog</span>
+        </button>
+        <button class="pose-btn" data-pose="plank" id="btn-plank">
+          <span class="pose-emoji">🏋️</span>
+          <span>Plank</span>
+        </button>
+        <button class="pose-btn" data-pose="cobra" id="btn-cobra">
+          <span class="pose-emoji">🐍</span>
+          <span>Cobra</span>
+        </button>
+        <button class="pose-btn" data-pose="goddess" id="btn-goddess">
+          <span class="pose-emoji">🌟</span>
+          <span>Goddess</span>
+        </button>
+        <button class="pose-btn" data-pose="triangle" id="btn-triangle">
+          <span class="pose-emoji">△</span>
+          <span>Triangle</span>
+        </button>
+        <button class="pose-btn auto-btn" id="btn-auto-detect">
+          <span class="pose-emoji">🤖</span>
+          <span>Auto</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- ═══ RIGHT — Analytics Panel ══════════════════════════════ -->
+    <aside class="right-panel" aria-label="Pose analytics">
+
+      <!-- Score + Status Card -->
+      <div class="card score-card" id="score-card">
+        <div class="score-ring-wrap" aria-label="Pose score ring">
+          <svg class="score-ring" width="90" height="90" viewBox="0 0 100 100">
+            <circle class="score-ring-bg" cx="50" cy="50" r="45" fill="none" stroke-width="8"/>
+            <circle id="score-fill" cx="50" cy="50" r="45" fill="none" stroke-width="8"/>
+          </svg>
+          <div class="score-label">
+            <div id="score-value">0%</div>
+            <div class="score-sub">Score</div>
+          </div>
+        </div>
+
+        <div class="score-right">
+          <div id="current-pose-name">Warrior II (Virabhadrasana II)</div>
+          <span id="status-badge" class="status-badge badge-unknown">Detecting…</span>
+
+          <!-- Hold Timer -->
+          <div class="hold-section">
+            <div class="hold-header">
+              <span class="hold-label">Hold</span>
+              <span id="hold-timer">0s / 30s</span>
+            </div>
+            <div class="hold-bar-bg">
+              <div id="hold-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback / Cue Card -->
+      <div class="card feedback-card" id="feedback-card">
+        <div class="card-title">Corrective Feedback</div>
+        <ul id="feedback-list">
+          <li class="feedback-item" style="border-color: var(--text-dim);">
+            <span class="joint-tag" style="color: var(--text-muted);">Ready</span>
+            Step into frame and try a pose
+          </li>
+        </ul>
+      </div>
+
+      <!-- Joint Detail Table -->
+      <div class="card joint-table-card" id="joints-card">
+        <div class="card-title">Joint Angles</div>
+        <table class="joint-table" aria-label="Joint angles and targets">
+          <thead>
+            <tr>
+              <th>Joint</th>
+              <th>Angle</th>
+              <th>Target</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="joint-table-body">
+            <tr>
+              <td colspan="4" style="color:var(--text-dim); text-align:center; padding: 16px 0;">
+                No pose data yet
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="card btn-row">
+        <button class="btn btn-primary" id="btn-reset">↺ Reset</button>
+        <button class="btn" id="btn-dev-panel">🛠 Dev Panel</button>
+      </div>
+
+      <!-- Developer Telemetry Panel (hidden by default; ?dev=1 for auto-show) -->
+      <div class="card hidden" id="dev-panel">
+        <div class="card-title">🛠 Developer Telemetry</div>
+        <div id="dev-panel-body">
+          <p style="color:var(--text-dim); font-size:0.75rem;">Waiting for landmarks…</p>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- App module -->
+  <script type="module" src="app.js"></script>
+
+  <!-- Dev-mode auto-open -->
+  <script>
+    if (window.location.search.includes("dev=1")) {
+      document.getElementById("dev-panel").classList.remove("hidden");
+    }
+  </script>
+
+</body>
+</html>

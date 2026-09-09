@@ -1,0 +1,15 @@
+{
+  "name": "synthetic_extraction_smoke_test",
+  "kind": "extraction",
+  "synthetic": true,
+  "cases": [
+    {
+      "predicted": {"doctor_name": "Dr. Sharma", "hospital": "City Hospital", "date": null},
+      "expected": {"doctor_name": "Dr. Sharma", "hospital": "City Hospital", "date": "2025-05-12"}
+    },
+    {
+      "predicted": {"doctor_name": "Dr. Shrama", "hospital": "City Hospital"},
+      "expected": {"doctor_name": "Dr. Sharma", "hospital": "City Hospital"}
+    }
+  ]
+}

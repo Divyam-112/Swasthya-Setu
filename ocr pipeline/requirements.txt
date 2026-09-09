@@ -1,0 +1,26 @@
+# Core
+Pillow>=10.0
+numpy>=1.26
+
+# Preprocessing
+opencv-python-headless>=4.9
+
+# OCR providers
+google-genai>=1.0                # GeminiOCRProvider (default/primary)
+
+# Extraction providers
+anthropic>=0.30                  # AnthropicExtractionClient (optional LLM extraction)
+
+# Vocabulary / interaction providers (Steps 4 & 8) — live network calls only,
+# not needed to run the unit test suite (which mocks these)
+requests>=2.31
+
+# API layer (Step 10)
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9        # required by FastAPI for UploadFile/form parsing
+
+# Testing
+pytest>=8.0
+pydantic>=2.6
+httpx>=0.27                    # required by fastapi.testclient.TestClient
