@@ -57,30 +57,40 @@ function calculateNutrientNeeds(patient) {
   const bmi = Math.round((weight / (heightInMeters * heightInMeters)) * 10) / 10;
 
   let bmiCategory = "Normal Weight";
+  let bmiCategoryKey = "normal_weight";
   let bmiColor = "#10b981"; // emerald
   let bmiBg = "#ecfdf5";
   let goalText = "Optimal Maintenance & Vitality";
+  let goalKey = "goal_maintenance";
 
   if (bmi < 18.5) {
     bmiCategory = "Underweight";
+    bmiCategoryKey = "underweight";
     bmiColor = "#0284c7"; // sky
     bmiBg = "#f0f9ff";
     goalText = "Calorie Surplus & Muscle Building";
+    goalKey = "goal_surplus";
   } else if (bmi < 25) {
     bmiCategory = "Normal Weight";
+    bmiCategoryKey = "normal_weight";
     bmiColor = "#10b981";
     bmiBg = "#ecfdf5";
     goalText = "Balanced Maintenance & Metabolic Health";
+    goalKey = "goal_balanced";
   } else if (bmi < 30) {
     bmiCategory = "Overweight";
+    bmiCategoryKey = "overweight";
     bmiColor = "#f59e0b"; // amber
     bmiBg = "#fffbeb";
     goalText = "Moderate Deficit & Active Fat Loss";
+    goalKey = "goal_deficit";
   } else {
     bmiCategory = "Obese";
+    bmiCategoryKey = "obese";
     bmiColor = "#ef4444"; // red
     bmiBg = "#fef2f2";
     goalText = "Metabolic Reset & Anti-Inflammatory Deficit";
+    goalKey = "goal_reset";
   }
 
   // Mifflin-St Jeor Equation for Basal Metabolic Rate (BMR)
@@ -153,9 +163,11 @@ function calculateNutrientNeeds(patient) {
   return {
     bmi,
     bmiCategory,
+    bmiCategoryKey,
     bmiColor,
     bmiBg,
     goalText,
+    goalKey,
     bmr: Math.round(bmr),
     targetCalories,
     proteinGrams,
@@ -172,7 +184,7 @@ function calculateNutrientNeeds(patient) {
 
 export default function Dashboard() {
   const { patient } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [partialError, setPartialError] = useState("");
@@ -321,10 +333,17 @@ export default function Dashboard() {
         <div>
           <h1 className="page-title" style={{ margin: 0 }}>{t("hello", "Hello")}, {patient?.name || t("patient", "Patient")}</h1>
           <p className="lede" style={{ margin: "4px 0 0 0" }}>
-            {patient?.age ? `${patient.age} yrs` : "Age not set"} · {patient?.gender || "Gender not set"} ·{" "}
-            {patient?.height ? `${patient.height} cm` : "Height not set"} ·{" "}
-            {patient?.weight ? `${patient.weight} kg` : "Weight not set"} ·{" "}
-            {languageLabel(patient?.preferredLanguage)}
+            {patient?.age ? `${patient.age} ${t("yrs", "yrs")}` : t("age_not_set", "Age not set")} ·{" "}
+            {patient?.gender
+              ? patient.gender.toLowerCase() === "male"
+                ? t("gender_male", "Male")
+                : patient.gender.toLowerCase() === "female"
+                ? t("gender_female", "Female")
+                : t("gender_other", "Other")
+              : t("gender_not_set", "Gender not set")} ·{" "}
+            {patient?.height ? `${patient.height} cm` : t("height_not_set", "Height not set")} ·{" "}
+            {patient?.weight ? `${patient.weight} kg` : t("weight_not_set", "Weight not set")} ·{" "}
+            {languageLabel(patient?.preferredLanguage, language)}
           </p>
         </div>
 
@@ -346,7 +365,7 @@ export default function Dashboard() {
       <section style={{ marginBottom: 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <h2 style={{ fontSize: "1.15rem", margin: 0, fontWeight: "700", display: "flex", alignItems: "center", gap: 8 }}>
-            <Clock size={18} style={{ color: "var(--brand)" }} /> {t("daily_routine", "Daily Health Reminders & Routine")}
+            <Clock size={18} style={{ color: "var(--brand)" }} /> {t("daily_health_routine", "Daily Health Reminders & Routine")}
           </h2>
           <span className="muted" style={{ fontSize: "0.8rem" }}>{t("today", "Today")}: {formatDate(new Date())}</span>
         </div>
@@ -360,7 +379,7 @@ export default function Dashboard() {
                   <Pill size={20} color="#2563eb" />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "700" }}>{t("reminders", "Medicine Reminders")}</h3>
+                  <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "700" }}>{t("medicine_reminders", "Medicine Reminders")}</h3>
                   <span className="muted" style={{ fontSize: "0.76rem" }}>{t("prescriptions_doses", "Prescriptions & Scheduled Doses")}</span>
                 </div>
               </div>
@@ -475,7 +494,7 @@ export default function Dashboard() {
                         </strong>
                       </div>
                       <div className="muted" style={{ fontSize: "0.74rem", marginLeft: 21 }}>
-                        {pose.timeOfDay || "Daily"} · {pose.durationMinutes || 10} min {pose.benefits ? `· ${pose.benefits}` : ""}
+                        {pose.timeOfDay ? t(pose.timeOfDay.toLowerCase(), pose.timeOfDay) : t("daily", "Daily")} · {pose.durationMinutes || 10} {t("min", "min")} {pose.benefits ? `· ${pose.benefits}` : ""}
                       </div>
                     </div>
 
@@ -544,7 +563,7 @@ export default function Dashboard() {
               {/* BMI Card */}
               <div style={{ padding: 14, borderRadius: 10, background: nutrientNeeds.bmiBg, border: `1px solid ${nutrientNeeds.bmiColor}` }}>
                 <span className="muted" style={{ fontSize: "0.78rem", textTransform: "uppercase", fontWeight: "600" }}>
-                  Body Mass Index (BMI)
+                  {t("bmi_label", "Body Mass Index (BMI)")}
                 </span>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 4 }}>
                   <span style={{ fontSize: "2rem", fontWeight: "800", color: nutrientNeeds.bmiColor }}>
@@ -560,11 +579,11 @@ export default function Dashboard() {
                       color: "white",
                     }}
                   >
-                    {nutrientNeeds.bmiCategory}
+                    {t(nutrientNeeds.bmiCategoryKey, nutrientNeeds.bmiCategory)}
                   </span>
                 </div>
                 <p className="muted" style={{ fontSize: "0.78rem", margin: "6px 0 0 0" }}>
-                  Height: <strong>{patient.height} cm</strong> · Weight: <strong>{patient.weight} kg</strong>
+                  {t("height", "Height")}: <strong>{patient.height} cm</strong> · {t("weight", "Weight")}: <strong>{patient.weight} kg</strong>
                 </p>
               </div>
 
@@ -577,10 +596,10 @@ export default function Dashboard() {
                   <span style={{ fontSize: "2rem", fontWeight: "800", color: "#0f172a" }}>
                     {nutrientNeeds.targetCalories.toLocaleString()}
                   </span>
-                  <span className="muted" style={{ fontSize: "0.9rem", fontWeight: "600" }}>kcal / day</span>
+                  <span className="muted" style={{ fontSize: "0.9rem", fontWeight: "600" }}>{t("kcal_day", "kcal / day")}</span>
                 </div>
                 <p style={{ fontSize: "0.78rem", margin: "6px 0 0 0", color: "#047857", fontWeight: "600" }}>
-                  Clinical Goal: {nutrientNeeds.goalText}
+                  {t("clinical_goal", "Clinical Goal")}: {t(nutrientNeeds.goalKey, nutrientNeeds.goalText)}
                 </p>
               </div>
 
@@ -594,13 +613,13 @@ export default function Dashboard() {
                     <span style={{ fontSize: "1.4rem", fontWeight: "700", color: "#0284c7" }}>
                       {nutrientNeeds.waterLiters}L
                     </span>
-                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Water intake</span>
+                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>{t("water_intake", "Water intake")}</span>
                   </div>
                   <div>
                     <span style={{ fontSize: "1.4rem", fontWeight: "700", color: "#15803d" }}>
                       {nutrientNeeds.fiberGrams}g
                     </span>
-                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Dietary fiber</span>
+                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>{t("dietary_fiber", "Dietary fiber")}</span>
                   </div>
                 </div>
               </div>
@@ -609,13 +628,13 @@ export default function Dashboard() {
             {/* Macronutrient Distribution Bars */}
             <div style={{ marginBottom: 20 }}>
               <h4 style={{ fontSize: "0.9rem", margin: "0 0 10px 0", fontWeight: "700" }}>
-                Macronutrient Target Split (Based on Body Composition):
+                {t("macronutrient_split", "Macronutrient Target Split (Based on Body Composition):")}
               </h4>
               <div className="grid three" style={{ gap: 14 }}>
                 {/* Protein */}
                 <div style={{ padding: 12, borderRadius: 8, background: "#fef2f2", border: "1px solid #fecaca" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <strong style={{ fontSize: "0.85rem", color: "#991b1b" }}>Protein</strong>
+                    <strong style={{ fontSize: "0.85rem", color: "#991b1b" }}>{t("protein", "Protein")}</strong>
                     <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "#991b1b" }}>
                       {nutrientNeeds.proteinGrams}g ({nutrientNeeds.proteinPct}%)
                     </span>
@@ -624,14 +643,14 @@ export default function Dashboard() {
                     <div style={{ width: `${nutrientNeeds.proteinPct}%`, height: "100%", background: "#ef4444" }} />
                   </div>
                   <span className="muted" style={{ fontSize: "0.72rem", marginTop: 4, display: "block" }}>
-                    Lean muscle repair & metabolic satiety
+                    {t("protein_desc", "Lean muscle repair & metabolic satiety")}
                   </span>
                 </div>
 
                 {/* Complex Carbs */}
                 <div style={{ padding: 12, borderRadius: 8, background: "#fffbeb", border: "1px solid #fde68a" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <strong style={{ fontSize: "0.85rem", color: "#92400e" }}>Complex Carbs</strong>
+                    <strong style={{ fontSize: "0.85rem", color: "#92400e" }}>{t("complex_carbs", "Complex Carbs")}</strong>
                     <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "#92400e" }}>
                       {nutrientNeeds.carbGrams}g ({nutrientNeeds.carbPct}%)
                     </span>
@@ -640,14 +659,14 @@ export default function Dashboard() {
                     <div style={{ width: `${nutrientNeeds.carbPct}%`, height: "100%", background: "#f59e0b" }} />
                   </div>
                   <span className="muted" style={{ fontSize: "0.72rem", marginTop: 4, display: "block" }}>
-                    Whole grains, pulses & sustained yoga energy
+                    {t("carbs_desc", "Whole grains, pulses & sustained yoga energy")}
                   </span>
                 </div>
 
                 {/* Healthy Fats */}
                 <div style={{ padding: 12, borderRadius: 8, background: "#ecfdf5", border: "1px solid #a7f3d0" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <strong style={{ fontSize: "0.85rem", color: "#065f46" }}>Healthy Fats</strong>
+                    <strong style={{ fontSize: "0.85rem", color: "#065f46" }}>{t("healthy_fats", "Healthy Fats")}</strong>
                     <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "#065f46" }}>
                       {nutrientNeeds.fatGrams}g ({nutrientNeeds.fatPct}%)
                     </span>
@@ -656,7 +675,7 @@ export default function Dashboard() {
                     <div style={{ width: `${nutrientNeeds.fatPct}%`, height: "100%", background: "#10b981" }} />
                   </div>
                   <span className="muted" style={{ fontSize: "0.72rem", marginTop: 4, display: "block" }}>
-                    Hormone production & joint lubrication
+                    {t("fats_desc", "Hormone production & joint lubrication")}
                   </span>
                 </div>
               </div>
@@ -665,7 +684,7 @@ export default function Dashboard() {
             {/* Key Micronutrients Tailored for Patient's BMI */}
             <div>
               <h4 style={{ fontSize: "0.9rem", margin: "0 0 10px 0", fontWeight: "700" }}>
-                Key Micronutrients Required for Your BMI Profile:
+                {t("key_micronutrients", "Key Micronutrients Required for Your BMI Profile:")}
               </h4>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
                 {nutrientNeeds.keyMicronutrients.map((micro, idx) => (
@@ -701,12 +720,12 @@ export default function Dashboard() {
         ) : (
           <div className="card" style={{ padding: 28, textAlign: "center", background: "#f8fafc", border: "1px dashed #cbd5e1" }}>
             <Activity size={32} style={{ color: "var(--brand)", margin: "0 auto 8px" }} />
-            <h3 style={{ margin: "8px 0 4px 0", fontSize: "1.05rem" }}>Set Your Height & Weight to Calculate Nutrients</h3>
+            <h3 style={{ margin: "8px 0 4px 0", fontSize: "1.05rem" }}>{t("height_weight_prompt_title", "Set Your Height & Weight to Calculate Nutrients")}</h3>
             <p className="muted" style={{ fontSize: "0.85rem", maxWidth: 500, margin: "0 auto 14px auto" }}>
-              Enter your biometric parameters in your profile to view your exact Body Mass Index (BMI), personalized daily caloric target, macronutrient distribution, and micronutrient checklist.
+              {t("height_weight_prompt_desc", "Enter your biometric parameters in your profile to view your exact Body Mass Index (BMI), personalized daily caloric target, macronutrient distribution, and micronutrient checklist.")}
             </p>
             <Link to="/profile" className="btn" style={{ padding: "8px 18px", fontSize: "0.88rem" }}>
-              Enter Height & Weight in Profile →
+              {t("enter_height_weight_btn", "Enter Height & Weight in Profile →")}
             </Link>
           </div>
         )}
@@ -789,11 +808,24 @@ export default function Dashboard() {
         <section className="card" style={{ marginTop: 20 }}>
           <h2>{t("upcoming_appointments", "Upcoming Doctor Appointments")}</h2>
           <ul className="list">
-            {appointments.slice(0, 3).map((item) => (
-              <li key={item._id}>
-                {item.doctor?.name || t("doctor", "Doctor")} · {item.status} · {formatDate(item.scheduledDate)}
-              </li>
-            ))}
+            {appointments.slice(0, 3).map((item) => {
+              const statusLabel =
+                item.status === "booked"
+                  ? t("status_booked", "Booked")
+                  : item.status === "in_progress"
+                  ? t("status_in_progress", "In Consultation")
+                  : item.status === "completed"
+                  ? t("status_completed", "Completed")
+                  : item.status === "cancelled"
+                  ? t("status_cancelled", "Cancelled")
+                  : item.status;
+
+              return (
+                <li key={item._id}>
+                  {item.doctor?.name || t("doctor", "Doctor")} · {statusLabel} · {formatDate(item.scheduledDate)}
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}

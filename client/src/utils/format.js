@@ -33,18 +33,18 @@ export function formatDateTime(value) {
   });
 }
 
-export function formatRelativeDay(value) {
-  if (!value) return "No date";
+export function formatRelativeDay(value, t) {
+  if (!value) return t ? t("no_data", "No date") : "No date";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "No date";
+  if (Number.isNaN(date.getTime())) return t ? t("no_data", "No date") : "No date";
   const startToday = new Date();
   startToday.setHours(0, 0, 0, 0);
   const startThat = new Date(date);
   startThat.setHours(0, 0, 0, 0);
   const diff = Math.round((startToday - startThat) / 86400000);
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  if (diff === -1) return "Tomorrow";
+  if (diff === 0) return t ? t("today", "Today") : "Today";
+  if (diff === 1) return t ? t("yesterday", "Yesterday") : "Yesterday";
+  if (diff === -1) return t ? t("tomorrow", "Tomorrow") : "Tomorrow";
   return formatDate(date);
 }
 
@@ -64,8 +64,8 @@ export function frequencyLabel(value) {
   return map[value] || value || "As scheduled";
 }
 
-export function languageLabel(code) {
-  const map = {
+export function languageLabel(code, currentLang) {
+  const mapEn = {
     hi: "Hindi",
     en: "English",
     ta: "Tamil",
@@ -77,10 +77,32 @@ export function languageLabel(code) {
     ml: "Malayalam",
     pa: "Punjabi",
   };
-  return map[code] || code || "Not set";
+  const mapHi = {
+    hi: "हिन्दी",
+    en: "अंग्रेज़ी",
+    ta: "तमिल",
+    te: "तेलुगु",
+    bn: "बंगाली",
+    mr: "मराठी",
+    gu: "गुजराती",
+    kn: "कन्नड़",
+    ml: "मलयालम",
+    pa: "पंजाबी",
+  };
+  if (currentLang === "hi") {
+    return mapHi[code] || code || "दर्ज नहीं";
+  }
+  return mapEn[code] || code || "Not set";
 }
 
-export function readingLabel(type) {
+export function readingLabel(type, t) {
+  if (t) {
+    if (type === "blood_pressure") return t("blood_pressure_label", "Blood pressure");
+    if (type === "blood_sugar") return t("blood_sugar_label", "Blood sugar");
+    if (type === "heart_rate") return t("heart_rate_label", "Heart rate");
+    if (type === "weight") return t("weight", "Weight");
+    if (type === "temperature") return t("temperature", "Temperature");
+  }
   const map = {
     blood_pressure: "Blood pressure",
     blood_sugar: "Blood sugar",
@@ -91,27 +113,32 @@ export function readingLabel(type) {
   return map[type] || type;
 }
 
-export function classifyReading(reading) {
-  if (!reading) return { label: "No reading", tone: "neutral" };
+export function classifyReading(reading, t) {
+  if (!reading) return { label: t ? t("no_data", "No reading") : "No reading", tone: "neutral" };
+  const labelUsual = t ? t("usual_range", "Usual range") : "Usual range";
+  const labelHigh = t ? t("high", "High") : "High";
+  const labelLow = t ? t("low", "Low") : "Low";
+  const labelRecorded = t ? t("recorded", "Recorded") : "Recorded";
+
   if (reading.type === "blood_pressure") {
     const sys = Number(reading.value);
     const dia = Number(reading.secondaryValue);
-    if (sys >= 140 || dia >= 90) return { label: "High", tone: "warn" };
-    if (sys < 90 || dia < 60) return { label: "Low", tone: "warn" };
-    return { label: "Usual range", tone: "ok" };
+    if (sys >= 140 || dia >= 90) return { label: labelHigh, tone: "warn" };
+    if (sys < 90 || dia < 60) return { label: labelLow, tone: "warn" };
+    return { label: labelUsual, tone: "ok" };
   }
   if (reading.type === "blood_sugar") {
     const value = Number(reading.value);
     if (reading.mealContext === "fasting") {
-      if (value >= 126) return { label: "High", tone: "warn" };
-      if (value < 70) return { label: "Low", tone: "warn" };
-      return { label: "Usual range", tone: "ok" };
+      if (value >= 126) return { label: labelHigh, tone: "warn" };
+      if (value < 70) return { label: labelLow, tone: "warn" };
+      return { label: labelUsual, tone: "ok" };
     }
-    if (value >= 200) return { label: "High", tone: "warn" };
-    if (value < 70) return { label: "Low", tone: "warn" };
-    return { label: "Recorded", tone: "neutral" };
+    if (value >= 200) return { label: labelHigh, tone: "warn" };
+    if (value < 70) return { label: labelLow, tone: "warn" };
+    return { label: labelRecorded, tone: "neutral" };
   }
-  return { label: "Recorded", tone: "neutral" };
+  return { label: labelRecorded, tone: "neutral" };
 }
 
 export function formatReadingValue(reading) {
