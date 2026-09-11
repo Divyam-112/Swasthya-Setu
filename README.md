@@ -99,7 +99,7 @@ SwasthyaSetu/
 │   ├── server.js
 │   ├── seed.js
 │   └── controllers/
-├── ocr pipeline/
+├── ocr_pipeline/
 │   ├── requirements.txt
 │   └── pipeline/
 └── yoga_pose/
