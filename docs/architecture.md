@@ -222,3 +222,4 @@ Data persistence is managed through MongoDB using Mongoose as the Object Data Mo
 * **Authentication and Authorization:** All protected endpoints require a signed JSON Web Token passed via authorization headers. Role checks strictly isolate patient data access to authorized treating medical personnel and the authenticated individual.
 * **Audit-Logged Informed Consent:** Account creation enforces explicit consent tracking for digital triage assistance, ABDM record linkage, and health locker integration.
 * **Input Validation and Sanitization:** Server-side validation layers protect against injection, parameter tampering, and malformed payload submissions.
+
