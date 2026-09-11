@@ -1,8 +1,6 @@
-# SwasthyaSetu — Edge-Assisted Bilingual Clinical Intelligence and Kiosk Platform
+# SwasthyaSetu – AI Clinical Intelligence & Kiosk Platform
 
-This repository contains the complete implementation of **SwasthyaSetu**, developed for Smart India Hackathon (SIH) 2026.
-
----
+This repository is the official submission for **Smart India Hackathon (SIH) 2026**.
 
 ## 1. Project Information
 
@@ -10,70 +8,59 @@ This repository contains the complete implementation of **SwasthyaSetu**, develo
 - **PS ID:** SIH2026-MED-042
 - **PS Title:** AI-assisted outpatient triage, clinical transcription, and vernacular health kiosk system
 - **Category:** Software
-- **Theme:** Healthcare & Biomedical Technology / MedTech
-
----
+- **Theme:** MedTech / Healthcare & Biomedical Technology
 
 ## 2. Problem Statement
 
-Public healthcare facilities and Primary Health Centers (PHCs) across India handle overwhelming patient volumes, with physicians routinely examining 80 to 100 Outpatient Department (OPD) patients during three-hour shifts. Over 60% of clinical consultation time is consumed by repetitive manual documentation, physical history-taking, and handwriting paper prescriptions rather than direct patient examination. Concurrently, rural and semi-urban patients encounter steep literacy and linguistic barriers, lack digital consolidation of past diagnostic reports, and receive minimal real-time guidance for doctor-prescribed physical therapy and rehabilitation.
-
----
+Public healthcare facilities and Primary Health Centers (PHCs) across India handle overwhelming patient loads, with doctors examining 80 to 100 OPD patients in short shifts. Doctors spend over 60% of consultation time manually capturing patient history, vital signs, and handwriting prescriptions. Concurrently, rural patients encounter language and literacy barriers, fragmented paper records, and lack guided physical therapy and rehabilitation.
 
 ## 3. Proposed Solution
 
-SwasthyaSetu ("Health Bridge") is an edge-assisted, bilingual clinical intelligence platform that links rural patient kiosks with hospital OPD doctor workstations. Prior to seeing the doctor, patients complete a structured, voice-guided clinical intake in their native language at the kiosk. The system stratifies clinical risks, extracts data from physical prescriptions via a resilient dual-tier OCR pipeline, synthesizes interview transcripts into standardized SOAP clinical summaries for the physician, and delivers client-side edge computer vision pose estimation for prescribed rehabilitation without streaming video over the network.
-
----
+SwasthyaSetu bridges rural patient kiosks with hospital OPD doctor workstations. Patients complete a structured, voice-guided clinical intake in their regional language at the kiosk before meeting the doctor. The system extracts data from physical prescriptions and lab reports via a dual-tier OCR pipeline, synthesizes interview transcripts into standardized SOAP clinical notes, and delivers in-browser edge computer vision pose estimation for prescribed rehabilitation without streaming video over the network.
 
 ## 4. Key Features
 
-- **Multilingual Vernacular Kiosk Intake:** Conversational voice and touch-driven medical history collection supporting 10 Indian languages (English, Hindi, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi) with real-time red-flag symptom detection.
-- **Ambient Scribe & Automated SOAP Notes:** Converts patient intake dialogues into structured Subjective, Objective, Assessment, Plan (SOAP) records and suggested ICD-10 diagnoses, reducing doctor intake documentation time by up to 75%.
-- **Edge-AI Computer Vision Pose Coaching:** MediaPipe WebAssembly engine executing entirely inside the browser to evaluate physical therapy and yoga postures with real-time joint-angle metrics, requiring zero cloud video bandwidth and preserving patient privacy.
-- **Dual-Tier Resilient Medical OCR:** Extracts medications, dosages, administration timings, and lab markers from paper prescriptions and diagnostic sheets using Google Gemini Flash Vision with automatic OpenRouter failover.
-- **Doctor Clinical Workstation:** Real-time OPD queue management, intake transcript inspection, and an official ABDM-compliant Digital Prescription Composer with print/PDF export.
-- **Biometric Health & Nutrition Engine:** Automated calculation of Body Mass Index (BMI), personalized caloric requirements, macronutrient distributions, and biometric trend charting (BP, blood sugar, heart rate).
-
----
+- Multilingual Vernacular Kiosk Intake across 10 Indian regional languages with speech-to-text
+- Ambient Clinical Scribe and automated SOAP note generation reducing doctor documentation time by up to 75%
+- In-browser Edge Computer Vision pose correction for prescribed yoga and rehabilitation routines
+- Dual-Tier Resilient Medical OCR for prescriptions and lab diagnostic reports
+- Doctor OPD Queue Management with priority clinical risk triage
+- Digital Prescription Composer with ABDM-compliant official Rx print layouts
+- Longitudinal Health Tracker for blood pressure, blood glucose, heart rate, and BMI-based nutrition targets
 
 ## 5. Technology Stack
 
-- **Frontend / Client Tier:** React 19, Vite, Vanilla CSS, Web Speech API
-- **Edge Computer Vision:** MediaPipe Pose (WebAssembly / WebGL), HTML5 Canvas
-- **Backend API Gateway:** Node.js, Express.js, REST API, JSON Web Tokens (JWT)
-- **Database & Persistence:** MongoDB, Mongoose ODM
-- **Machine Learning & OCR:** Google Gemini Flash Vision, OpenRouter Multimodal API, OpenCV, NumPy
-- **Python Auxiliary Pipelines:** FastAPI, Pydantic, MediaPipe Python SDK, Uvicorn
-- **Deployment & Hosting:** Vercel (Frontend Client), Render (Backend Node API), MongoDB Atlas
-
----
+- Frontend: React 19, Vite, Vanilla CSS, Web Speech API
+- Backend: Node.js, Express.js, REST API, JSON Web Tokens (JWT)
+- Machine Learning & Computer Vision: MediaPipe Pose (WebAssembly / WebGL), OpenCV, NumPy
+- Vision & OCR Providers: Google Gemini Flash Vision, OpenRouter Multimodal Fallback
+- Database: MongoDB, Mongoose ODM
+- Deployment: Vercel (Client), Render (Backend), MongoDB Atlas
 
 ## 6. Architecture
 
-See [docs/architecture.md](docs/architecture.md) for detailed technical specifications and component interactions.
+See [docs/architecture.md](docs/architecture.md).
 
 ```text
-[Patient Kiosk / App]                [Doctor Workstation]
-        |                                     |
-        | (Voice / Touch / Edge Pose)         | (Queue & Prescription)
-        +------------------+------------------+
-                           |
-                           v
-              [Express.js REST Gateway]
-              [JWT Auth & ABDM Consent]
-                           |
-            +--------------+--------------+
-            |                             |
-            v                             v
-   [MongoDB Database]           [Intelligence Tier]
-   - Patient Profiles           - Dual-Tier OCR Pipeline
-   - Clinical Sessions          - Gemini / OpenRouter Vision
-   - OPD Queue Records          - Clinical SOAP Synthesizer
-   - Health Vitals Timeseries
+User (Patient Kiosk / Doctor Workstation)
+  |
+  v
+Frontend (React 19 + WebAssembly Edge Pose)
+  |
+  v
+Backend API (Express.js REST Gateway + JWT Auth)
+  |
+  +----> Database (MongoDB - Patients, Sessions, OPD Queue, Vitals)
+  |
+  v
+Machine Learning Services (Dual-Tier Gemini/OpenRouter OCR + Clinical LLM Scribe)
+  |
+  v
+Prediction & Synthesized Clinical SOAP / Extracted Rx Entities
+  |
+  v
+Frontend (Doctor OPD Dashboard / Patient Portal)
 ```
-
----
 
 ## 7. Repository Structure
 
@@ -86,6 +73,7 @@ SwasthyaSetu/
 ├── docs/
 │   └── architecture.md
 ├── submission/
+│   ├── PRESENTATION.md
 │   ├── PRSENTATION.md
 │   └── DEMO.md
 ├── screenshots/
@@ -106,19 +94,11 @@ SwasthyaSetu/
 │   ├── package.json
 │   ├── vite.config.js
 │   └── src/
-│       ├── components/
-│       ├── context/
-│       ├── pages/
-│       ├── services/
-│       └── utils/
 ├── server/
 │   ├── package.json
 │   ├── server.js
 │   ├── seed.js
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   └── services/
+│   └── controllers/
 ├── ocr pipeline/
 │   ├── requirements.txt
 │   └── pipeline/
@@ -131,44 +111,36 @@ SwasthyaSetu/
 
 | Item | Location |
 |---|---|
-| Frontend single-page application | `client/` |
-| Backend Express REST API server | `server/` |
-| Technical architecture documentation | `docs/architecture.md` |
-| Python OCR & document extraction pipeline | `ocr pipeline/` |
-| Python kinematic reference pose engine | `yoga_pose/pipeline/` |
-| Application UI screenshots | `screenshots/` |
-| Final presentation slides link | `submission/PRSENTATION.md` |
-| Video demonstration link | `submission/DEMO.md` |
-| Python dependencies | `requirements.txt` |
-| Open-source license terms | `LICENSE` |
-
----
+| Source code (Client & Server) | `client/`, `server/` |
+| Architecture / technical documentation | `docs/architecture.md` |
+| Project screenshots | `screenshots/` |
+| Final PPT / presentation | `submission/PRESENTATION.md` |
+| Demo video link | `submission/DEMO.md` |
+| Project overview | `README.md` |
 
 ## 8. Final Presentation
 
-The complete SIH presentation deck detailing problem framing, architecture, clinical workflows, and social impact is documented in:
+Keep your final SIH presentation in the repository whenever the file size allows it.
 
-See [submission/PRSENTATION.md](submission/PRSENTATION.md) for the presentation details.
+See [submission/PRESENTATION.md](submission/PRESENTATION.md) for the required format and presentation details.
 
 - **Presentation Link:** [View Presentation on Google Drive](https://drive.google.com/drive/u/5/folders/1vYV-grpc7Lmv8FgcRcNa6Dp0YSrvpHEW)
 
----
-
 ## 9. Demo Video
 
-A complete walkthrough video demonstrating the live patient intake, OPD queue management, Edge AI pose correction, and digital prescription generation is documented in:
+A demo video is **optional**, but recommended.
 
-See [submission/DEMO.md](submission/DEMO.md) for the video description.
+Add the YouTube/Google Drive link in [submission/DEMO.md](submission/DEMO.md).
 
 - **Demo Video Link:** [Watch Demo Video on Google Drive](https://drive.google.com/drive/folders/1G-lIdTcfq7XXqMAXFx1vHOEMSWPr33Fd?usp=sharing)
 
----
-
 ## 10. Screenshots / Prototype Photos
 
-Application UI screenshots illustrating the end-to-end user workflows are available in the [screenshots/](screenshots/) directory:
+Add important screenshots or hardware/prototype photos to:
 
-| File | Feature / Screen Description |
+`screenshots/`
+
+| File | Description |
 |---|---|
 | [01_landing_kiosk_home.png](screenshots/01_landing_kiosk_home.png) | Patient Kiosk entry portal with quick-start symptom intake |
 | [02_patient_registration_consent.png](screenshots/02_patient_registration_consent.png) | Patient registration modal with ABHA ID and informed consent |
@@ -184,91 +156,52 @@ Application UI screenshots illustrating the end-to-end user workflows are availa
 | [12_doctor_patient_report_interview_transcript.png](screenshots/12_doctor_patient_report_interview_transcript.png) | Pre-consultation AI interview transcript review for physicians |
 | [13_doctor_patient_report_medical_history.png](screenshots/13_doctor_patient_report_medical_history.png) | Structured past medical history, surgeries, and clinical review |
 
----
-
 ## 11. Installation
 
-### Prerequisites
-- Node.js (v18.0 or higher)
-- npm (v9.0 or higher)
-- Python (v3.10 or higher, optional for standalone Python pipelines)
-- MongoDB instance (local or MongoDB Atlas URI)
-
-### Setup Instructions
-
-1. Clone the repository:
 ```bash
+# 1. Clone repository
 git clone https://github.com/Divyam-112/Swasthya-Setu.git
 cd Swasthya-Setu
-```
 
-2. Install backend dependencies:
-```bash
+# 2. Install backend dependencies
 cd server
 npm install
-```
 
-3. Install frontend dependencies:
-```bash
+# 3. Install frontend dependencies
 cd ../client
 npm install
-```
 
-4. Install Python pipeline dependencies (optional):
-```bash
+# 4. Install Python dependencies (optional for Python OCR & kinematic tools)
 cd ..
 pip install -r requirements.txt
 ```
 
-5. Configure environment variables:
-Create a `.env` file in the `server/` directory:
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-CLIENT_URL=http://localhost:5173
-GEMINI_API_KEY=your_gemini_api_key
-OPENROUTER_API_KEY=your_openrouter_api_key
-```
-
----
-
 ## 12. Run
 
-1. Seed initial clinical demonstration data (patients, doctor profile, OPD queue):
 ```bash
+# 1. Seed initial clinical test data
 cd server
 node seed.js --reset
-```
 
-2. Launch the backend API server:
-```bash
+# 2. Start backend API server (runs on http://localhost:5000)
 npm start
-```
-The server runs on `http://localhost:5000`.
 
-3. In a separate terminal, start the frontend client:
-```bash
-cd client
+# 3. Start frontend client in separate terminal (runs on http://localhost:5173)
+cd ../client
 npm run dev
 ```
-The application opens on `http://localhost:5173`.
 
-4. Default Demonstration Credentials:
-- **Doctor Portal:** Email: `dr.priya@swasthyasetu.in` | Password: `doctorpassword`
-- **Patient Portal:** Mobile: `9876543210` | Password: `password123`
-
----
+### Demonstration Credentials
+- Doctor Portal: Email: `dr.priya@swasthyasetu.in` | Password: `doctorpassword`
+- Patient Portal: Mobile: `9876543210` | Password: `password123`
 
 ## 13. Future Scope
 
-- **ABHA Health Locker Deep Integration:** Direct integration with Ayushman Bharat Digital Mission (ABDM) Milestone 1 to 3 APIs for automated consent-driven health data discovery and exchange across national networks.
-- **Audio-Visual "Talking Prescription" (Bolti Parchi):** Automatic generation of vernacular audio instructions and visual sun/moon dosage cards accessible via QR code scans for illiterate patients.
-- **Automated Clinical Early Warning Scoring (MEWS):** Machine-learning powered triage score embedded in kiosk intakes to dynamically elevate critical patients (e.g., suspected acute coronary syndrome or severe hypoxia) to priority status in hospital OPD waiting queues.
-- **Dual Allopathy-AYUSH Drug Interaction Engine:** Cross-referencing prescribed allopathic pharmaceuticals against traditional Ayurvedic formulations to preempt adverse herb-drug interactions.
-
----
+- Direct ABHA Milestone 1-3 API integration for automated consent-driven health record exchange across national health networks
+- Audio-visual "Talking Prescription" (Bolti Parchi) generating regional spoken instructions and visual dosage cards for illiterate patients
+- Machine-learning driven Modified Early Warning Score (MEWS) triage to automatically prioritize critical emergencies in OPD queues
+- Unified Allopathy-AYUSH herb-drug interaction safety checker
 
 ## Important
 
-Before submission, ensure the repository is accessible to reviewers. Do **not** upload passwords, API keys, access tokens, `.env` files containing secrets, or other confidential credentials.
+Before submission, make sure the repository is accessible to reviewers. Do **not** upload passwords, API keys, access tokens, `.env` files containing secrets, or other confidential credentials.
