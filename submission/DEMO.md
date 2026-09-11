@@ -15,3 +15,4 @@ The demonstration video highlights the complete end-to-end clinical workflow of 
 3. **Computer Vision Pose Correction:** In-browser edge AI pose estimation for prescribed yoga and rehabilitation routines with real-time joint angles and form feedback.
 4. **Doctor OPD Clinical Workstation:** Real-time outpatient department queue management, review of bilingual interview transcripts, and synthesized SOAP clinical notes.
 5. **Digital Prescription & Records:** Official ABDM digital prescription composition, print/PDF export, and dual-tier medical document OCR.
+
