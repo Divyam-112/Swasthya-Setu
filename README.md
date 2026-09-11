@@ -1,14 +1,15 @@
-# SwasthyaSetu – AI Clinical Intelligence & Kiosk Platform
+# SwasthyaSetu
 
 This repository is the official submission for **Smart India Hackathon (SIH) 2026**.
 
 ## 1. Project Information
 
-- **Project Title:** SwasthyaSetu – Edge-Assisted Bilingual Clinical Intelligence and Kiosk Platform
-- **PS ID:** SIH2026-MED-042
-- **PS Title:** AI-assisted outpatient triage, clinical transcription, and vernacular health kiosk system
+- **Project Title:** SwasthyaSetu
+- **PS ID:** SIH26047
+- **PS Title:** Patient Case-Taking Software
+- **Organization:** Ministry of Ayush
 - **Category:** Software
-- **Theme:** MedTech / Healthcare & Biomedical Technology
+- **Theme:** MedTech / BioTech / HealthTech
 
 ## 2. Problem Statement
 
