@@ -18,3 +18,4 @@
    - In-browser real-time posture coaching with zero video streaming bandwidth.
    - Dual-tier OCR extracting medicines, dosages, and diagnostic markers.
 5. **Impact:** Scalable, affordable, and low-bandwidth digital healthcare empowerment for underserved rural and semi-urban populations.
+
