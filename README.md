@@ -202,7 +202,3 @@ npm run dev
 - Audio-visual "Talking Prescription" (Bolti Parchi) generating regional spoken instructions and visual dosage cards for illiterate patients
 - Machine-learning driven Modified Early Warning Score (MEWS) triage to automatically prioritize critical emergencies in OPD queues
 - Unified Allopathy-AYUSH herb-drug interaction safety checker
-
-## Important
-
-Before submission, make sure the repository is accessible to reviewers. Do **not** upload passwords, API keys, access tokens, `.env` files containing secrets, or other confidential credentials.
